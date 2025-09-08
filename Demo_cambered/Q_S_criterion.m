@@ -28,7 +28,7 @@ dy = abs(y(2) - y(1));
 r_x = ceil(min_radius_phys / dx);
 r_y = ceil(min_radius_phys / dy);
 
-% Create elliptical mask based on physical distance
+% Create circular mask based on physical distance
 [X, Y] = meshgrid((-r_x:r_x)*dx, (-r_y:r_y)*dy);
 mask = (X.^2 + Y.^2) <= min_radius_phys^2;
 
@@ -52,7 +52,7 @@ C = 1./D;
 Q_S = Q.*C;
 
 % Vortex identification using GMM thresholding
-Q_S_nonzero = Q_S(Q_S > 0); % select non-zero Q_S values
+Q_S_nonzero = Q_S(Q_S > 0); % select positive Q_S values
 options = statset('MaxIter',1000);
 GMModel = fitgmdist(Q_S_nonzero, 2, 'Options', options); % two Gaussian distributions to model the background, and the vortical regions
 
@@ -74,5 +74,6 @@ min_area_grid_points = round(min_area_phys / grid_point_area);  % minimum number
 % Filter small regions
 % Remove all connected components from Q_S_binary that have fewer grid points than min_area_grid_points
 Q_S_binary = bwareaopen(Q_S_binary, min_area_grid_points);
+
 
 end
